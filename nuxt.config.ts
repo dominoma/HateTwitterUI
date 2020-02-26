@@ -1,4 +1,5 @@
-export default {
+import { Configuration } from '@nuxt/types'
+const config: Configuration = {
   mode: 'universal',
   /*
    ** Headers of the page
@@ -33,6 +34,7 @@ export default {
    */
   buildModules: [
     // Doc: https://github.com/nuxt-community/eslint-module
+    '@nuxt/typescript-build',
     '@nuxtjs/eslint-module',
     // Doc: https://github.com/nuxt-community/stylelint-module
     '@nuxtjs/stylelint-module'
@@ -60,6 +62,7 @@ export default {
     /*
      ** You can extend webpack config here
      */
-    extend(config, ctx) {}
+    // extend(config, ctx) {}
   }
 }
+export default config
