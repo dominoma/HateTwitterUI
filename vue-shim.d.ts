@@ -9,3 +9,9 @@ declare module 'vue-d3-charts' {
   export const D3LineChart: VueConstructor<Vue>
   export const D3PieChart: VueConstructor<Vue>
 }
+declare module 'vue-world-map' {
+  // eslint-disable-next-line import/no-duplicates
+  import { VueConstructor } from 'vue'
+  const x: VueConstructor<Vue>
+  export default x
+}

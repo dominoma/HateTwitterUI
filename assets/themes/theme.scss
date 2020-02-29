@@ -1,0 +1,25 @@
+// $primary: #48ffd5;
+// $secondary: #0e2a47;
+
+$body-bg: #343e59;
+// $body-color: white;
+// $border-color: white;
+
+// $nav-tabs-border-color:             $border-color;
+// $nav-tabs-link-hover-border-color:  $primary $primary $nav-tabs-border-color;
+// $nav-tabs-link-active-color:        $primary;
+// $nav-tabs-link-active-bg:           $body-bg;
+// $nav-tabs-link-active-border-color: $border-color $border-color $nav-tabs-link-active-bg;
+// $card-bg:                           $secondary;
+// $card-border-color:                 $border-color;
+
+// .nav-item a {
+//     color: white;
+// }
+
+.apexcharts-canvas.apexcharts-theme-dark {
+    background: #2b2d3e !important;
+    
+}
+
+@import "node_modules/bootstrap/scss/bootstrap";
