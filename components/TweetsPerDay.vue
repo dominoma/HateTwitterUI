@@ -7,7 +7,7 @@
   ></apexchart>
 </template>
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator'
+import { Vue, Component, Prop, Emit } from 'vue-property-decorator'
 import { Hashtag } from '~/types'
 
 @Component
@@ -15,10 +15,26 @@ export default class TweetsPerDay extends Vue {
   @Prop()
   hashtag!: Hashtag
 
+  @Emit('area-selected')
+  handleZoomed(area: { min: number | undefined; max: number | undefined }) {
+    return area
+  }
+
   get chart() {
     return {
       options: {
-        chart: {},
+        chart: {
+          events: {
+            zoomed: (_chartContext: any, { xaxis }: any) => {
+              this.handleZoomed(xaxis)
+            },
+            scrolled: (_chartContext: any, { xaxis }: any) => {
+              this.handleZoomed(xaxis)
+            }
+          },
+          group: 'timeline',
+          id: 'tweets'
+        },
         theme: {
           mode: 'dark',
           palette: 'palette1'
@@ -30,7 +46,10 @@ export default class TweetsPerDay extends Vue {
           size: 5
         },
         xaxis: {
-          type: 'datetime'
+          type: 'datetime',
+          tooltip: {
+            enabled: false
+          }
         }
       },
       series: [

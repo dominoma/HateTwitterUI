@@ -15,3 +15,14 @@ declare module 'vue-world-map' {
   const x: VueConstructor<Vue>
   export default x
 }
+declare module 'vue-fusioncharts' {
+  // eslint-disable-next-line import/no-duplicates
+  import { PluginObject } from 'vue'
+  const x: PluginObject<any>
+  export default x
+}
+declare module 'vue-tweet-embed' {
+  // eslint-disable-next-line import/no-duplicates
+  import { VueConstructor } from 'vue'
+  export const Tweet: VueConstructor<Vue>
+}

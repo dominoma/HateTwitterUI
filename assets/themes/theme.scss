@@ -17,9 +17,13 @@ $body-bg: #343e59;
 //     color: white;
 // }
 
+$dark: #2b2d3e;
+
 .apexcharts-canvas.apexcharts-theme-dark {
     background: #2b2d3e !important;
-    
+    svg {
+        overflow: visible;
+    }
 }
 
 @import "node_modules/bootstrap/scss/bootstrap";

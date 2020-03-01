@@ -1,5 +1,1 @@
 import 'reflect-metadata'
-// import VueApexCharts from 'vue-apexcharts'
-// import Vue from 'vue'
-
-// Vue.use(VueApexCharts)
