@@ -7,8 +7,8 @@
   ></apexchart>
 </template>
 <script lang="ts">
-import { Vue, Component, Prop, Emit } from 'vue-property-decorator'
-import { Hashtag } from '../types'
+import { Vue, Component, Prop, PropSync } from 'vue-property-decorator'
+import { Hashtag, Zoom } from '~/types'
 
 type Color = { red: number; green: number; blue: number }
 
@@ -54,19 +54,23 @@ export default class SentimentPerDay extends Vue {
   @Prop()
   hashtag!: Hashtag
 
-  @Emit('area-selected')
-  handleZoomed(area: { min: number | undefined; max: number | undefined }) {
-    return area
-  }
+  @PropSync('zoom')
+  zoomedArea!: Zoom
 
-  data = Object.entries(this.hashtag.date).map(([date]) => ({
-    x: date,
-    y: Math.floor(Math.random() * 200 - 100)
-  }))
+  // data = Object.entries(this.hashtag.date).map(([date]) => ({
+  //   x: date,
+  //   y: Math.floor(Math.random() * 200 - 100)
+  // }))
+  readonly data = Object.entries(this.hashtag.tweetDates)
+    .filter(([, { pos, neg }]) => pos > 0 && neg > 0)
+    .map(([date, { pos, neg }]) => ({
+      x: date,
+      y: Math.floor(((pos - neg) / (pos + neg)) * 100)
+    }))
+    .sort((a, b) => a.x.localeCompare(b.x))
 
   getMinMax() {
     const arr = this.data.concat().sort((a, b) => a.y - b.y)
-    console.log(arr)
     return {
       min: arr[0],
       max: arr[arr.length - 1]
@@ -82,11 +86,9 @@ export default class SentimentPerDay extends Vue {
         { red: 0, green: 255, blue: 0 }
       )
     const { min, max } = this.getMinMax()
-    console.log(min.y, max.y)
     const minFac = (min.y + 100) / 200
     const maxFac = (max.y + 100) / 200
     const medFac = (max.y + min.y) / 400 + 0.5
-    console.log(minFac, medFac, maxFac)
     const minColor = pick(minFac)
     const maxColor = pick(maxFac)
     const medColor = pick(medFac)
@@ -96,16 +98,15 @@ export default class SentimentPerDay extends Vue {
 
   get chart() {
     const colors = this.getGradientColors()
-    console.log(colors)
     return {
       options: {
         chart: {
           events: {
             zoomed: (_chartContext: any, { xaxis }: any) => {
-              this.handleZoomed(xaxis)
+              this.zoomedArea = xaxis
             },
             scrolled: (_chartContext: any, { xaxis }: any) => {
-              this.handleZoomed(xaxis)
+              this.zoomedArea = xaxis
             }
           },
           group: 'timeline',
@@ -117,6 +118,10 @@ export default class SentimentPerDay extends Vue {
         stroke: {
           width: 7,
           curve: 'smooth'
+        },
+        title: {
+          text: 'Sentiment-Verlauf',
+          align: 'center'
         },
         fill: {
           type: 'gradient',
@@ -147,7 +152,9 @@ export default class SentimentPerDay extends Vue {
           type: 'datetime',
           tooltip: {
             enabled: false
-          }
+          },
+          min: this.zoomedArea.min,
+          max: this.zoomedArea.max
         },
         yaxis: {
           min: -100,

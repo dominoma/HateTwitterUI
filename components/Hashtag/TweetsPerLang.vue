@@ -27,7 +27,7 @@ export default class TweetsPerLang extends Vue {
 
   getRangedData() {
     if (this.range && (this.range.min || this.range.max)) {
-      return this.hashtag.dateLang
+      return this.hashtag.langUsagePerDay
         .filter(({ date }) => {
           const ts = +new Date(date)
           return (
@@ -40,7 +40,7 @@ export default class TweetsPerLang extends Vue {
           return acc
         }, {} as { [lang: string]: number })
     } else {
-      return this.hashtag.lang
+      return this.hashtag.langUsage
     }
   }
 
@@ -78,10 +78,13 @@ export default class TweetsPerLang extends Vue {
               )
             }
           }
+        },
+        title: {
+          text: 'Sprachverteilung',
+          align: 'center'
         }
       },
-      series: Object.values(lang),
-      hashtag: this.hashtag.hashtag
+      series: Object.values(lang)
     }
   }
 }

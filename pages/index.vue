@@ -1,19 +1,19 @@
 <template>
-  <HashtagDashboard :hashtag="hashtag" />
+  <OverviewDashboard :hashtag-list="hashtagList" />
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
-import HashtagDashboard from '~/components/HashtagDashboard.vue'
-import hashtag from '~/assets/data/hashtag.json'
+import OverviewDashboard from '~/components/OverviewDashboard.vue'
+import hashtagList from '~/assets/data/hashtagList.json'
 
 @Component({
   components: {
-    HashtagDashboard
+    OverviewDashboard
   }
 })
 export default class Index extends Vue {
-  hashtag = hashtag
+  hashtagList = hashtagList
 }
 </script>
 

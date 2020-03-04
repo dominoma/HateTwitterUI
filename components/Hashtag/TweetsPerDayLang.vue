@@ -1,14 +1,14 @@
 <template>
   <apexchart
-    type="line"
+    type="area"
     :height="300"
     :options="chart.options"
     :series="chart.series"
   ></apexchart>
 </template>
 <script lang="ts">
-import { Vue, Component, Prop, Emit } from 'vue-property-decorator'
-import { Hashtag } from '~/types'
+import { Vue, Component, Prop, PropSync } from 'vue-property-decorator'
+import { Hashtag, Zoom } from '~/types'
 
 import LangCodes from '~/assets/data/langCodes.json'
 
@@ -17,16 +17,14 @@ export default class TweetsPerDayLang extends Vue {
   @Prop()
   hashtag!: Hashtag
 
-  @Emit('area-selected')
-  handleZoomed(area: { min: number | undefined; max: number | undefined }) {
-    return area
-  }
+  @PropSync('zoom')
+  zoomedArea!: Zoom
 
   get langs() {
-    return Object.entries(this.hashtag.lang)
+    return Object.entries(this.hashtag.langUsage)
       .sort((a, b) => b[1] - a[1])
       .map(([l]) => l)
-      .slice(0, 3)
+      .slice(0, 4)
       .sort((a, b) => a.localeCompare(b))
   }
 
@@ -36,10 +34,10 @@ export default class TweetsPerDayLang extends Vue {
         chart: {
           events: {
             zoomed: (_chartContext: any, { xaxis }: any) => {
-              this.handleZoomed(xaxis)
+              this.zoomedArea = xaxis
             },
             scrolled: (_chartContext: any, { xaxis }: any) => {
-              this.handleZoomed(xaxis)
+              this.zoomedArea = xaxis
             }
           },
           group: 'timeline',
@@ -56,7 +54,13 @@ export default class TweetsPerDayLang extends Vue {
           type: 'datetime',
           tooltip: {
             enabled: false
-          }
+          },
+          min: this.zoomedArea.min,
+          max: this.zoomedArea.max
+        },
+        title: {
+          text: 'Tweets pro Sprache',
+          align: 'center'
         },
         dataLabels: {
           enabled: false
@@ -64,7 +68,7 @@ export default class TweetsPerDayLang extends Vue {
       },
       series: this.langs.map((lang) => ({
         name: (LangCodes as any)[lang] || lang,
-        data: this.hashtag.dateLang
+        data: this.hashtag.langUsagePerDay
           .filter((el) => el.lang === lang)
           .map(({ date, value }) => ({ x: date, y: value }))
           .sort((a, b) => a.x.localeCompare(b.x))

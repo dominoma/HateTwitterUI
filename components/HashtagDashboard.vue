@@ -5,13 +5,18 @@
         <div>
           <TweetsPerDay
             :hashtag="hashtag"
-            @area-selected="(ar) => (range = ar)"
+            :zoom="initialRange"
+            @update:zoom="(ar) => (range = ar)"
           />
         </div>
       </div>
       <div class="col-5">
         <div>
-          <Tweet id="771763270273294336" :options="{ theme: 'dark' }" />
+          <Tweet
+            :id="hashtag.topTweetId"
+            :options="{ theme: 'dark' }"
+            class="max-height-tweet"
+          />
         </div>
       </div>
     </div>
@@ -20,7 +25,8 @@
         <div>
           <TweetsPerDayLang
             :hashtag="hashtag"
-            @area-selected="(ar) => (range = ar)"
+            :zoom="initialRange"
+            @update:zoom="(ar) => (range = ar)"
           />
         </div>
       </div>
@@ -35,13 +41,14 @@
         <div>
           <SentimentPerDay
             :hashtag="hashtag"
-            @area-selected="(ar) => (range = ar)"
+            :zoom="initialRange"
+            @update:zoom="(ar) => (range = ar)"
           />
         </div>
       </div>
       <div class="col-5">
         <div>
-          <Sentiment :hashtag="hashtag" />
+          <Sentiment :hashtag="hashtag" :range="range" />
         </div>
       </div>
     </div>
@@ -52,12 +59,12 @@
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { Tweet } from 'vue-tweet-embed'
 
-import { Hashtag } from '../types'
-import TweetsPerDay from '~/components/TweetsPerDay.vue'
-import TweetsPerDayLang from '~/components/TweetsPerDayLang.vue'
-import TweetsPerLang from '~/components/TweetsPerLang.vue'
-import SentimentPerDay from '~/components/SentimentPerDay.vue'
-import Sentiment from '~/components/Sentiment.vue'
+import { Hashtag, Zoom } from '../types'
+import TweetsPerDay from '~/components/Hashtag/TweetsPerDay.vue'
+import TweetsPerDayLang from '~/components/Hashtag/TweetsPerDayLang.vue'
+import TweetsPerLang from '~/components/Hashtag/TweetsPerLang.vue'
+import SentimentPerDay from '~/components/Hashtag/SentimentPerDay.vue'
+import Sentiment from '~/components/Hashtag/Sentiment.vue'
 
 @Component({
   components: {
@@ -70,13 +77,20 @@ import Sentiment from '~/components/Sentiment.vue'
   }
 })
 export default class HashtagDashboard extends Vue {
-  range: { min: number | undefined; max: number | undefined } = {
-    min: undefined,
-    max: undefined
-  }
-
   @Prop()
   hashtag!: Hashtag
+
+  get initialRange(): Zoom {
+    const sorted = Object.entries(this.hashtag.tweetDates)
+      .filter(([, { total }]) => total > 100)
+      .sort((a, b) => a[0].localeCompare(b[0]))
+    return {
+      min: +new Date(sorted[0][0]),
+      max: +new Date(sorted[sorted.length - 1][0])
+    }
+  }
+
+  range = this.initialRange
 }
 </script>
 
@@ -97,5 +111,9 @@ export default class HashtagDashboard extends Vue {
       height: 100%;
     }
   }
+}
+.max-height-tweet {
+  max-height: 300px;
+  overflow-y: auto;
 }
 </style>
