@@ -7,13 +7,18 @@
   ></apexchart>
 </template>
 <script lang="ts">
-import { Vue, Component, Prop, PropSync } from 'vue-property-decorator'
+import { Vue, Component, Prop, Emit } from 'vue-property-decorator'
 import { Hashtag, Zoom } from '~/types'
 
 @Component
 export default class TweetsPerDayLang extends Vue {
-  @PropSync('zoom')
-  zoomedArea!: Zoom
+  @Prop()
+  zoom!: Zoom
+
+  @Emit('zoom-update')
+  handleZoomUpdate(zoom: Zoom) {
+    return zoom
+  }
 
   @Prop()
   hashtagList!: Hashtag[]
@@ -24,10 +29,10 @@ export default class TweetsPerDayLang extends Vue {
         chart: {
           events: {
             zoomed: (_chartContext: any, { xaxis }: any) => {
-              this.zoomedArea = xaxis
+              this.handleZoomUpdate(xaxis)
             },
             scrolled: (_chartContext: any, { xaxis }: any) => {
-              this.zoomedArea = xaxis
+              this.handleZoomUpdate(xaxis)
             }
           },
           group: 'timeline',
@@ -45,8 +50,8 @@ export default class TweetsPerDayLang extends Vue {
           tooltip: {
             enabled: false
           },
-          min: this.zoomedArea.min,
-          max: this.zoomedArea.max
+          min: this.zoom.min,
+          max: this.zoom.max
         },
         dataLabels: {
           enabled: false

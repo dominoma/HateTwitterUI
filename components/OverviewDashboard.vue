@@ -4,11 +4,11 @@
       <div class="col-7">
         <div>
           <b-form-tags
-            :tags.sync="selectedHashtags"
             separator=" ,;"
             tag-pills
             placeholder="Hashtags zum Anzeigen eingeben"
             class="my-2"
+            @input="handleTagsUpdated"
           ></b-form-tags>
         </div>
       </div>
@@ -40,7 +40,7 @@
           <HashtagsPerDay
             :hashtag-list="top5Hashtags"
             :zoom="initialRange"
-            @update:zoom="
+            @zoom-update="
               (ar) => {
                 range = ar
               }
@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator'
+import { Vue, Component, Prop, Emit } from 'vue-property-decorator'
 import { Hashtag, Zoom, HashtagUsage } from '../types'
 import HashtagBubbles from '~/components/Overview/HashtagBubbles.vue'
 import HashtagsTotal from '~/components/Overview/HashtagsTotal.vue'
@@ -76,8 +76,12 @@ import HashtagsPerDay from '~/components/Overview/HashtagsPerDay.vue'
   }
 })
 export default class OverviewDashboard extends Vue {
-  selectedHashtags: string[] = []
   hashtagSearchValue = ''
+
+  @Emit('hashtags')
+  handleTagsUpdated(tags: string[]) {
+    return tags
+  }
 
   @Prop()
   hashtagList!: Hashtag[]
@@ -92,7 +96,7 @@ export default class OverviewDashboard extends Vue {
       .slice(0, 5)
   }
 
-  getInitialRange() {
+  get initialRange() {
     const l = this.hashtagList.map((ht) => {
       const l = Object.entries(ht.tweetDates)
         .filter(([, { total }]) => total > ht.tweets.total * 0.001)
@@ -107,7 +111,6 @@ export default class OverviewDashboard extends Vue {
     }
   }
 
-  initialRange = this.getInitialRange()
   range: Zoom = this.initialRange
 
   handleHashtagSelected(hashtag: string) {
