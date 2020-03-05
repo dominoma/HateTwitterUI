@@ -50,6 +50,10 @@ export default class TweetsPerDayLang extends Vue {
         },
         dataLabels: {
           enabled: false
+        },
+        title: {
+          text: 'Tweets pro Tag',
+          align: 'center'
         }
       },
       series: this.hashtagList

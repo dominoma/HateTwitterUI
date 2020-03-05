@@ -4,8 +4,9 @@
       <div class="col-7">
         <div>
           <b-form-tags
-            v-model="selectedHashtags"
+            :tags.sync="selectedHashtags"
             separator=" ,;"
+            tag-pills
             placeholder="Hashtags zum Anzeigen eingeben"
             class="my-2"
           ></b-form-tags>
@@ -17,6 +18,7 @@
             v-model="hashtagSearchValue"
             placeholder="Direkt nach Hashtag suchen"
             class="my-2"
+            @keydown.enter="handleHashtagSelected(hashtagSearchValue)"
           ></b-form-input>
         </div>
       </div>
@@ -25,7 +27,7 @@
       <div class="col-12">
         <div>
           <HashtagBubbles
-            :hashtag-list="hashtagList"
+            :hashtag-list="topHashtags"
             :zoom="{}"
             @selected="handleHashtagSelected"
           />
@@ -36,9 +38,13 @@
       <div class="col-7">
         <div>
           <HashtagsPerDay
-            :hashtag-list="hashtagList"
+            :hashtag-list="top5Hashtags"
             :zoom="initialRange"
-            @update:zoom="(ar) => (range = ar)"
+            @update:zoom="
+              (ar) => {
+                range = ar
+              }
+            "
           />
         </div>
       </div>
@@ -57,7 +63,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
-import { Hashtag, Zoom } from '../types'
+import { Hashtag, Zoom, HashtagUsage } from '../types'
 import HashtagBubbles from '~/components/Overview/HashtagBubbles.vue'
 import HashtagsTotal from '~/components/Overview/HashtagsTotal.vue'
 import HashtagsPerDay from '~/components/Overview/HashtagsPerDay.vue'
@@ -70,19 +76,39 @@ import HashtagsPerDay from '~/components/Overview/HashtagsPerDay.vue'
   }
 })
 export default class OverviewDashboard extends Vue {
-  range: Zoom = {
-    min: +new Date('2018-01-07'),
-    max: undefined
-  }
-
-  initialRange = this.range
-
   selectedHashtags: string[] = []
   hashtagSearchValue = ''
-  log = console.log
 
   @Prop()
   hashtagList!: Hashtag[]
+
+  @Prop()
+  topHashtags!: HashtagUsage[]
+
+  get top5Hashtags() {
+    return this.hashtagList
+      .concat()
+      .sort((a, b) => b.tweets.total - a.tweets.total)
+      .slice(0, 5)
+  }
+
+  getInitialRange() {
+    const l = this.hashtagList.map((ht) => {
+      const l = Object.entries(ht.tweetDates)
+        .filter(([, { total }]) => total > ht.tweets.total * 0.001)
+        .sort((a, b) => b[1].total - a[1].total)
+      return { min: l[0], max: l[l.length - 1] }
+    })
+    const min = l.concat().sort((a, b) => a.min[0].localeCompare(b.min[0]))
+    const max = l.concat().sort((a, b) => b.max[0].localeCompare(a.max[0]))
+    return {
+      min: +new Date(min[0].min[0]),
+      max: +new Date(max[0].max[0])
+    }
+  }
+
+  initialRange = this.getInitialRange()
+  range: Zoom = this.initialRange
 
   handleHashtagSelected(hashtag: string) {
     this.$router.push(`hashtag/${hashtag}`)

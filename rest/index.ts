@@ -1,14 +1,19 @@
-import hashtagList from '~/assets/data/hashtagList.json'
-import hashtag from '~/assets/data/hashtag.json'
-import { Hashtag } from '~/types'
+import axios from 'axios'
+import { Hashtag, HashtagUsage } from '~/types'
 
-// eslint-disable-next-line require-await
-export async function fetchTopHashtags(): Promise<Hashtag[]> {
-  return hashtagList
+export async function fetchTopHashtags(): Promise<HashtagUsage[]> {
+  const rsp = await axios.get('http://localhost:5000/tophashtags?count=30')
+  return rsp.data
 }
 
-// eslint-disable-next-line require-await, @typescript-eslint/no-unused-vars
 export async function fetchHashtag(name: string): Promise<Hashtag> {
-  console.log(name)
-  return hashtag
+  const rsp = await axios.get(`http://localhost:5000/hashtag/${name}`)
+  return rsp.data
+}
+
+export async function fetchTop5Hashtags(): Promise<Hashtag[]> {
+  const rsp = await axios.get(
+    'http://localhost:5000/tophashtags?count=5&full=true'
+  )
+  return rsp.data
 }

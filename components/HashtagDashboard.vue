@@ -1,6 +1,18 @@
 <template>
   <div class="ht-container">
     <div class="row">
+      <div class="col-12">
+        <div class="d-flex">
+          <h1 class="text-white m-auto ">
+            Übersicht für <code>#{{ hashtag.name }}</code>
+            <b-badge class="h3">Platz {{ hashtag.ranking }}</b-badge>
+          </h1>
+
+          <b-button class="my-auto" variant="light" to="/">Zurück</b-button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
       <div class="col-7">
         <div>
           <TweetsPerDay
@@ -82,7 +94,7 @@ export default class HashtagDashboard extends Vue {
 
   get initialRange(): Zoom {
     const sorted = Object.entries(this.hashtag.tweetDates)
-      .filter(([, { total }]) => total > 100)
+      .filter(([, { total }]) => total > this.hashtag.tweets.total * 0.0005)
       .sort((a, b) => a[0].localeCompare(b[0]))
     return {
       min: +new Date(sorted[0][0]),
@@ -102,7 +114,8 @@ export default class HashtagDashboard extends Vue {
 }
 .row {
   .col-7,
-  .col-5 {
+  .col-5,
+  .col-12 {
     padding: 1rem;
     & > div {
       background: $dark;

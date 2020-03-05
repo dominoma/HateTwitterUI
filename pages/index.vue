@@ -1,19 +1,27 @@
 <template>
-  <OverviewDashboard :hashtag-list="hashtagList" />
+  <OverviewDashboard :hashtag-list="hashtagList" :top-hashtags="topHashtags" />
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
+import { fetchTopHashtags, fetchTop5Hashtags } from '../rest'
+import { Hashtag, HashtagUsage } from '../types'
 import OverviewDashboard from '~/components/OverviewDashboard.vue'
-import hashtagList from '~/assets/data/hashtagList.json'
 
 @Component({
   components: {
     OverviewDashboard
+  },
+  async asyncData() {
+    return {
+      hashtagList: await fetchTop5Hashtags(),
+      topHashtags: await fetchTopHashtags()
+    }
   }
 })
 export default class Index extends Vue {
-  hashtagList = hashtagList
+  hashtagList!: Hashtag[]
+  topHashtags!: HashtagUsage[]
 }
 </script>
 
