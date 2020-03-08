@@ -1,5 +1,13 @@
 import { Configuration } from '@nuxt/types'
+
 const config: Configuration = {
+  router: {
+    base: '/twitter-analysis'
+  },
+  server: {
+    port: 3001,
+    host: 'basecamp-demos.informatik.uni-hamburg.de'
+  },
   mode: 'spa',
   /*
    ** Headers of the page
