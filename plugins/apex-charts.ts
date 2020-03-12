@@ -1,3 +1,6 @@
+/**
+ * This file imports apexcharts and fusioncharts to the webpage
+ */
 import { Plugin } from '@nuxt/types'
 import VueApexCharts from 'vue-apexcharts'
 import FusionCharts from 'fusioncharts'
@@ -8,6 +11,7 @@ import Vue from 'vue'
 import CandyTheme from 'fusioncharts/themes/fusioncharts.theme.candy'
 Charts(CandyTheme(FusionCharts))
 
+/** set custom theme for apexcharts */
 const apexCharts: Plugin = () => {
   ;(window as any).Apex = {
     chart: {
