@@ -10,6 +10,9 @@
 import { Vue, Component, Prop, Emit } from 'vue-property-decorator'
 import { Hashtag, Zoom } from '~/types'
 
+/**
+ * Chart which shows the hashtag trend per day of all hashtags provided by 'hashtagList'
+ */
 @Component
 export default class TweetsPerDayLang extends Vue {
   @Prop()

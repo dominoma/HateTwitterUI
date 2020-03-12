@@ -12,6 +12,10 @@ import { Hashtag, Zoom } from '~/types'
 
 import LangCodes from '~/assets/data/langCodes.json'
 
+/**
+ * Chart which shows the number of tweets using a specific hashtag per day and per language (shows the 5 most used)
+ * where each language is represented by a line in the graph.
+ */
 @Component
 export default class TweetsPerDayLang extends Vue {
   @Prop()
@@ -20,6 +24,9 @@ export default class TweetsPerDayLang extends Vue {
   @PropSync('zoom')
   zoomedArea!: Zoom
 
+  /**
+   * Calculates the five most used languages
+   */
   get langs() {
     return Object.entries(this.hashtag.langUsage)
       .sort((a, b) => b[1] - a[1])

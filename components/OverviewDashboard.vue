@@ -68,6 +68,9 @@ import HashtagBubbles from '~/components/Overview/HashtagBubbles.vue'
 import HashtagsTotal from '~/components/Overview/HashtagsTotal.vue'
 import HashtagsPerDay from '~/components/Overview/HashtagsPerDay.vue'
 
+/**
+ * Dashboard which gives an overview of the top hashtags in out dataset.
+ */
 @Component({
   components: {
     HashtagBubbles,
@@ -96,6 +99,13 @@ export default class OverviewDashboard extends Vue {
       .slice(0, 5)
   }
 
+  /**
+   * Calculates the initial range for the HashtagsPerDay-chart in this dashboard.
+   * It will show data in the time range where the hashtags were really used.
+   * Really used means that the first day of the calculated range is the first day where more
+   * than 0.1% of all tweets using one of the hashtags were posted.
+   * The last day in this range is the last day where over 0.1% of the total tweets of one hashtag were postet.
+   */
   get initialRange() {
     const l = this.hashtagList.map((ht) => {
       const l = Object.entries(ht.tweetDates)

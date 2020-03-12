@@ -4,7 +4,9 @@ export interface TweetsCount {
   unknown: number
   total: number
 }
-
+/**
+ * Full hashtag dataset
+ */
 export interface Hashtag {
   name: string
   tweets: TweetsCount
@@ -15,10 +17,20 @@ export interface Hashtag {
   ranking: number
 }
 
+/**
+ * HahstagUsage contains only the most important hashtag keys (tweets, name and topTweetId)
+ * Also contains hypePeak
+ */
 export type HashtagUsage = Pick<Hashtag, 'tweets' | 'name' | 'topTweetId'> & {
+  /**
+   * The date where the most tweets using this hashtag were postet
+   */
   hypePeak: string
 }
-
+/**
+ * represents min date and max date of data shon in charts.
+ * Dates are represented by their timestamps
+ */
 export interface Zoom {
   min: number | undefined
   max: number | undefined

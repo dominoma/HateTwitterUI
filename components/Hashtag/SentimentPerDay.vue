@@ -12,6 +12,10 @@ import { Hashtag, Zoom } from '~/types'
 
 type Color = { red: number; green: number; blue: number }
 
+/**
+ * Calculates gradient bewteen 3 colors.
+ * @param fadeFraction position of the requested color in the color range where 0 => color1, 0.5 => color2, 1 => color3
+ */
 function colorGradient(
   fadeFraction: number,
   rgbColor1: Color,
@@ -20,18 +24,13 @@ function colorGradient(
 ) {
   let color1 = rgbColor1
   let color2 = rgbColor2
-  let fade = fadeFraction
+  let fade = fadeFraction * 2
 
-  // Do we have 3 colors for the gradient? Need to adjust the params.
-  if (rgbColor3) {
-    fade = fade * 2
-
-    // Find which interval to use and adjust the fade percentage
-    if (fade >= 1) {
-      fade -= 1
-      color1 = rgbColor2
-      color2 = rgbColor3
-    }
+  // Find which interval to use and adjust the fade percentage
+  if (fade >= 1) {
+    fade -= 1
+    color1 = rgbColor2
+    color2 = rgbColor3
   }
 
   const diffRed = color2.red - color1.red
@@ -48,7 +47,9 @@ function colorGradient(
     'rgb(' + gradient.red + ',' + gradient.green + ',' + gradient.blue + ')'
   )
 }
-
+/**
+ * Line-Chart which visualizes sentiment per day. Its line is green when sentiment is high and red if sentiment is low. The line is yellow if sentiment is around 0%.
+ */
 @Component
 export default class SentimentPerDay extends Vue {
   @Prop()
@@ -57,10 +58,7 @@ export default class SentimentPerDay extends Vue {
   @PropSync('zoom')
   zoomedArea!: Zoom
 
-  // data = Object.entries(this.hashtag.date).map(([date]) => ({
-  //   x: date,
-  //   y: Math.floor(Math.random() * 200 - 100)
-  // }))
+  /** date-sorted data */
   readonly data = Object.entries(this.hashtag.tweetDates)
     .filter(([, { pos, neg }]) => pos > 0 && neg > 0)
     .map(([date, { pos, neg }]) => ({
@@ -77,6 +75,10 @@ export default class SentimentPerDay extends Vue {
     }
   }
 
+  /**
+   * Calculates the min max and intermediate colors for the gradient of the chart.
+   * The chart uses gradients relative to the highest and lowest points in the chart, but we want the gradient colors to be absolute.
+   */
   getGradientColors() {
     const pick = (factor: number) =>
       colorGradient(

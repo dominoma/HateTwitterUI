@@ -10,10 +10,18 @@
 import { Vue, Component, Prop, PropSync, Emit } from 'vue-property-decorator'
 import { Zoom, HashtagUsage } from '~/types'
 
+/**
+ * overall sentiment is converted to percentage. -100% means that all tweets were negative, 100% menas all tweets were positive.
+ */
 function getSentiment(pos: number, neg: number) {
   return pos + neg === 0 ? 0 : Math.floor(((pos - neg) / (pos + neg)) * 100)
 }
 
+/**
+ * Chart which shows all hashtags provided by 'hashtagList' as bubbles.
+ * The position on the x-axis shows the date where the most of the tweets using that hashtag where posted.
+ * The position on the y-axis shows the sentiment of the hashtag in percent. 100% => all tweets were positive, -100% => all tweets were negative
+ */
 @Component
 export default class HashtagBubbles extends Vue {
   @Prop()
@@ -27,6 +35,11 @@ export default class HashtagBubbles extends Vue {
     return hashtagName
   }
 
+  /**
+   * For better comparison the sizes of the buubbles are converted so that the bubbles can be compared by area and not by radius.
+   *
+   * eg: A bubble with 2 times more tweets posted than another hashtag has an area double the area than that other hashtag.
+   */
   formatBubbleSize = {
     to: (v: number) => Math.floor((v / Math.PI) ** 0.5),
     from: (v: number) => Math.floor(v ** 2 * Math.PI)

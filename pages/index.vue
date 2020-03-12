@@ -12,6 +12,9 @@ import { fetchTopHashtags, fetchTop5Hashtags, fetchHashtag } from '../rest'
 import { Hashtag, HashtagUsage } from '../types'
 import OverviewDashboard from '~/components/OverviewDashboard.vue'
 
+/**
+ * This class encapsulates the home page showing an overview of the top trending hashtags in our dataset
+ */
 @Component({
   components: {
     OverviewDashboard
@@ -27,6 +30,9 @@ export default class Index extends Vue {
   hashtagList!: Hashtag[]
   topHashtags!: HashtagUsage[]
 
+  /**
+   * Loads hashtags added to the overview by user
+   */
   async handleTagsUpdated(tags: string[]) {
     try {
       if (tags.length === 0) {

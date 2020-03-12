@@ -25,6 +25,9 @@ export default class TweetsPerLang extends Vue {
     return lang
   }
 
+  /**
+   * This function sums up all tweets by languages in the time range given by the property 'range'
+   */
   getRangedData() {
     if (this.range && (this.range.min || this.range.max)) {
       return this.hashtag.langUsagePerDay
@@ -44,6 +47,9 @@ export default class TweetsPerLang extends Vue {
     }
   }
 
+  /**
+   * Calculates the 5 most used languages and sums up the rest as 'Other' languages. Returns the chart data object.
+   */
   get chart() {
     const others = Object.entries(this.getRangedData()).sort(
       (a, b) => b[1] - a[1]

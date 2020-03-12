@@ -10,6 +10,9 @@
 import { Vue, Component, Prop, Emit } from 'vue-property-decorator'
 import { Hashtag, Zoom } from '~/types'
 
+/**
+ * This chart shows the top 5 tweets of the dataset provided by 'hashtagList'
+ */
 @Component
 export default class HashtagsTotal extends Vue {
   @Prop()
@@ -23,6 +26,10 @@ export default class HashtagsTotal extends Vue {
     return hashtagName
   }
 
+  /**
+   * This function sums up all tweets in the time range given by the property 'range'
+   * and returns the top 5 hashtags and their corresponding tweets
+   */
   getRangedData() {
     if (this.range && (this.range.min || this.range.max)) {
       return this.hashtagList

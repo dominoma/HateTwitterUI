@@ -78,6 +78,9 @@ import TweetsPerLang from '~/components/Hashtag/TweetsPerLang.vue'
 import SentimentPerDay from '~/components/Hashtag/SentimentPerDay.vue'
 import Sentiment from '~/components/Hashtag/Sentiment.vue'
 
+/**
+ * Dashboard which shows details of one specific hashtag.
+ */
 @Component({
   components: {
     TweetsPerDay,
@@ -92,6 +95,13 @@ export default class HashtagDashboard extends Vue {
   @Prop()
   hashtag!: Hashtag
 
+  /**
+   * Calculates the initial range for all charts in this dashboard.
+   * All charts will show data in the time range where the hashtag was really used.
+   * Really used means that the first day of the calculated range is the first day where more
+   * than 0.05% of all tweets using this hashtag were posted.
+   * The last day in this range is the last day where over 0.05% of the total tweets were postet.
+   */
   get initialRange(): Zoom {
     const sorted = Object.entries(this.hashtag.tweetDates)
       .filter(([, { total }]) => total > this.hashtag.tweets.total * 0.0005)

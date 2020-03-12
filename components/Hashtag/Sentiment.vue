@@ -19,6 +19,9 @@ export default class Sentiment extends Vue {
   @Prop()
   range!: { min: number | undefined; max: number | undefined }
 
+  /**
+   * This function sums up all sentiment data in the time range given by the property 'range'
+   */
   getRangedData() {
     if (this.range && (this.range.min || this.range.max)) {
       const { val, total } = Object.entries(this.hashtag.tweetDates)
