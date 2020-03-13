@@ -104,17 +104,24 @@ export default class OverviewDashboard extends Vue {
    * It will show data in the time range where the hashtags were really used.
    * Really used means that the first day of the calculated range is the first day where more
    * than 0.1% of all tweets using one of the hashtags were posted.
-   * The last day in this range is the last day where over 0.1% of the total tweets of one hashtag were postet.
+   * The last day in this range is the last day where over 0.1% of the total tweets of one hashtag were posted.
    */
   get initialRange() {
-    const l = this.hashtagList.map((ht) => {
-      const l = Object.entries(ht.tweetDates)
+    const sortedHashtags = this.hashtagList.map((ht) => {
+      const sortedTweetDates = Object.entries(ht.tweetDates)
         .filter(([, { total }]) => total > ht.tweets.total * 0.001)
-        .sort((a, b) => b[1].total - a[1].total)
-      return { min: l[0], max: l[l.length - 1] }
+        .sort((a, b) => a[0].localeCompare(b[0]))
+      return {
+        min: sortedTweetDates[0],
+        max: sortedTweetDates[sortedTweetDates.length - 1]
+      }
     })
-    const min = l.concat().sort((a, b) => a.min[0].localeCompare(b.min[0]))
-    const max = l.concat().sort((a, b) => b.max[0].localeCompare(a.max[0]))
+    const min = sortedHashtags
+      .concat()
+      .sort((a, b) => a.min[0].localeCompare(b.min[0]))
+    const max = sortedHashtags
+      .concat()
+      .sort((a, b) => b.max[0].localeCompare(a.max[0]))
     return {
       min: +new Date(min[0].min[0]),
       max: +new Date(max[0].max[0])

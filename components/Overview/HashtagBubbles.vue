@@ -129,7 +129,7 @@ export default class HashtagBubbles extends Vue {
           }
         },
         title: {
-          text: 'Top 20 Hashtags',
+          text: 'Top 30 Hashtags',
           align: 'center'
         }
       }

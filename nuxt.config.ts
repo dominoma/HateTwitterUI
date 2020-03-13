@@ -5,8 +5,8 @@ const config: Configuration = {
     base: '/twitter-analysis'
   },
   server: {
-    port: 3001,
-    host: 'basecamp-demos.informatik.uni-hamburg.de'
+    port: 3001
+    // host: 'basecamp-demos.informatik.uni-hamburg.de'
   },
   mode: 'spa',
   /*
