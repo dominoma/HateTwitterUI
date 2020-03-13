@@ -12,6 +12,11 @@ $ npm run dev
 # build for production and launch server
 $ npm run build
 $ npm run start
+
+# start from terminal
+$ nohup npm run start &
+$ jobs -l # use job id from the job you started for the next command
+$ disown <job-id>
 ```
 
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
